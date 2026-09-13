@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgroInkub - Խելացի Ագրո Ներդրումներ</title>
+  <style>
+    :root {
+      --primary: #2e7d32;
+      --primary-light: #4caf50;
+      --bg: #f4f7f4;
+      --card-bg: #ffffff;
+      --text: #2c3e50;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 20px; }
+
+    header { text-align: center; margin-bottom: 30px; }
+    header h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 10px; }
+    header p { color: #666; font-size: 1.1rem; }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+
+    /* Incubator Animation Area */
+    .incubator-box {
+      text-align: center;
+      position: relative;
+    }
+    .egg-graphic {
+      font-size: 80px;
+      margin: 20px 0;
+      display: inline-block;
+      animation: pulse 2s infinite ease-in-out;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(76, 175, 80, 0.4)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 15px rgba(76, 175, 80, 0.8)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(76, 175, 80, 0.4)); }
+    }
+
+    /* Calculator */
+    .slider-container { margin: 25px 0; }
+    .slider {
+      width: 100%;
+      height: 8px;
+      border-radius: 5px;
+      background: #ddd;
+      outline: none;
+      accent-color: var(--primary);
+    }
+    .result-box {
+      background: #e8f5e9;
+      border-left: 5px solid var(--primary);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+    .result-val { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
+
+    /* Stream Simulator */
+    .stream-view {
+      width: 100%;
+      height: 200px;
+      background: #111;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .live-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      background: red; color: white;
+      padding: 4px 8px; border-radius: 4px;
+      font-size: 0.8rem; font-weight: bold;
+      animation: blink 1s infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.5; } }
+
+    .btn-action {
+      width: 100%;
+      padding: 14px;
+      background: var(--primary);
+      color: white; border: none;
+      border-radius: 10px;
+      font-size: 1.1rem; font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 15px;
+    }
+    .btn-action:hover { background: var(--primary-light); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>AgroInkub 🥚</h1>
+    <p>Ներդրում արա իրական գյուղատնտեսության մեջ՝ քո սմարթֆոնից</p>
+  </header>
+
+  <div class="grid-container">
+
+    <!-- 1. Ինտերակտիվ Ինկուբատոր -->
+    <div class="card incubator-box">
+      <h3>Վիրտուալ Ինկուբատոր</h3>
+      <div class="egg-graphic" id="incubatorEgg">🥚</div>
+      <p>Ջերմաստիճան: <b>37.8°C</b> | Խոնավություն: <b>65%</b></p>
+      <p style="margin-top: 10px; color: #888;">Օր 1 / 21 (Ինկուբացիայի ընթացք)</p>
+    </div>
+
+    <!-- 2. Ռիսկավորված Կալկուլյատոր -->
+    <div class="card">
+      <h3>Եկամտաբերության Հաշվիչ</h3>
+      <div class="slider-container">
+        <label>Ձվերի քանակ: <b id="eggCountVal">100</b> ձու</label>
+        <input type="range" min="10" max="1000" step="10" value="100" class="slider" id="eggSlider">
+      </div>
+      
+      <p>Ներդրվող գումար: <b id="investVal">50,000</b> ֏</p>
+      
+      <div class="result-box">
+        <p>Կանխատեսվող Եկամուտ (80% - 92% դուրսբերում):</p>
+        <div class="result-val" id="incomeRange">55,000 ֏ - 62,000 ֏</div>
+        <small style="color: #555;">Մաքուր շահույթ՝ +5,000 ֏-ից մինչև +12,000 ֏</small>
+      </div>
+
+      <button class="btn-action">Սկսել Ինկուբացիան</button>
+    </div>
+
+    <!-- 3. Live Web-կամերա (Simulated Stream) -->
+    <div class="card">
+      <h3>Real-Time Live Web-Cam</h3>
+      <div class="stream-view">
+        <div class="live-badge">🔴 LIVE</div>
+        <p>📹 [Ինկուբատոր #042 Ուղիղ Հեռարձակում]</p>
+      </div>
+      <p style="margin-top: 12px; font-size: 0.9rem; color: #666;">
+        Հետևիր քո ձվերի վիճակին ռեալ ժամանակում HD տեսախցիկների միջոցով:
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    const slider = document.getElementById('eggSlider');
+    const eggCountVal = document.getElementById('eggCountVal');
+    const investVal = document.getElementById('investVal');
+    const incomeRange = document.getElementById('incomeRange');
+    const incubatorEgg = document.getElementById('incubatorEgg');
+
+    const EGG_PRICE = 500; // 1 ձվի ինքնարժեքը դրամով
+
+    slider.addEventListener('input', (e) => {
+      const count = parseInt(e.target.value);
+      const investment = count * EGG_PRICE;
+      
+      // 80% ցածր ռիսկ / 92% բարձր ռիսկ
+      const minIncome = Math.round(count * 0.80 * 687.5);
+      const maxIncome = Math.round(count * 0.92 * 673.9);
+
+      eggCountVal.innerText = count;
+      investVal.innerText = investment.toLocaleString();
+      incomeRange.innerText = `${minIncome.toLocaleString()} ֏ - ${maxIncome.toLocaleString()} ֏`;
+
+      // Թեթև անիմացիոն wobble էֆեկտ ձվի վրա շարժելիս
+      incubatorEgg.style.transform = `rotate(${Math.sin(count) * 15}deg)`;
+    });
+  </script>
+</body>
+</html>
