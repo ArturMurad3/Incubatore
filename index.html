@@ -45,6 +45,7 @@
       margin: 20px 0;
       display: inline-block;
       animation: pulse 2s infinite ease-in-out;
+      transition: transform 0.1s ease;
     }
     @keyframes pulse {
       0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(76, 175, 80, 0.4)); }
@@ -129,16 +130,16 @@
     <div class="card">
       <h3>Եկամտաբերության Հաշվիչ</h3>
       <div class="slider-container">
-        <label>Ձվերի քանակ: <b id="eggCountVal">100</b> ձու</label>
+        <label>Ձվերի քանակ: <b id="eggCountVal">100</b> ձու (100 ֏/ձու)</label>
         <input type="range" min="10" max="1000" step="10" value="100" class="slider" id="eggSlider">
       </div>
       
-      <p>Ներդրվող գումար: <b id="investVal">50,000</b> ֏</p>
+      <p>Ներդրվող գումար: <b id="investVal">10,000</b> ֏</p>
       
       <div class="result-box">
         <p>Կանխատեսվող Եկամուտ (80% - 92% դուրսբերում):</p>
-        <div class="result-val" id="incomeRange">55,000 ֏ - 62,000 ֏</div>
-        <small style="color: #555;">Մաքուր շահույթ՝ +5,000 ֏-ից մինչև +12,000 ֏</small>
+        <div class="result-val" id="incomeRange">11,000 ֏ - 12,400 ֏</div>
+        <small id="profitVal" style="color: #555;">Մաքուր շահույթ՝ +1,000 ֏-ից մինչև +2,400 ֏</small>
       </div>
 
       <button class="btn-action">Սկսել Ինկուբացիան</button>
@@ -163,21 +164,26 @@
     const eggCountVal = document.getElementById('eggCountVal');
     const investVal = document.getElementById('investVal');
     const incomeRange = document.getElementById('incomeRange');
+    const profitVal = document.getElementById('profitVal');
     const incubatorEgg = document.getElementById('incubatorEgg');
 
-    const EGG_PRICE = 500; // 1 ձվի ինքնարժեքը դրամով
+    const EGG_PRICE = 100; // 1 ձվի ինքնարժեքը = 100 դրամ
 
     slider.addEventListener('input', (e) => {
       const count = parseInt(e.target.value);
       const investment = count * EGG_PRICE;
       
-      // 80% ցածր ռիսկ / 92% բարձր ռիսկ
-      const minIncome = Math.round(count * 0.80 * 687.5);
-      const maxIncome = Math.round(count * 0.92 * 673.9);
+      // 80% դուրսբերման դեպքում 137.5 ֏ / 92% դուրսբերման դեպքում 134.8 ֏ իրացում 1 ճուտից
+      const minIncome = Math.round(count * 0.80 * 137.5);
+      const maxIncome = Math.round(count * 0.92 * 134.8);
+
+      const minProfit = minIncome - investment;
+      const maxProfit = maxIncome - investment;
 
       eggCountVal.innerText = count;
       investVal.innerText = investment.toLocaleString();
       incomeRange.innerText = `${minIncome.toLocaleString()} ֏ - ${maxIncome.toLocaleString()} ֏`;
+      profitVal.innerText = `Մաքուր շահույթ՝ +${minProfit.toLocaleString()} ֏-ից մինչև +${maxProfit.toLocaleString()} ֏`;
 
       // Թեթև անիմացիոն wobble էֆեկտ ձվի վրա շարժելիս
       incubatorEgg.style.transform = `rotate(${Math.sin(count) * 15}deg)`;
