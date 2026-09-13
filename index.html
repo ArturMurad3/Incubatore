@@ -8,6 +8,8 @@
     :root {
       --primary: #2e7d32;
       --primary-light: #4caf50;
+      --bee-color: #f39c12;
+      --bee-bg: #fff8e7;
       --bg: #f4f7f4;
       --card-bg: #ffffff;
       --text: #2c3e50;
@@ -16,9 +18,36 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding: 20px; }
 
-    header { text-align: center; margin-bottom: 30px; }
-    header h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 10px; }
+    header { text-align: center; margin-bottom: 25px; }
+    header h1 { color: var(--primary); font-size: 2.2rem; margin-bottom: 8px; }
     header p { color: #666; font-size: 1.1rem; }
+
+    /* Category Switcher Tabs */
+    .tab-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+    .tab-btn {
+      padding: 12px 24px;
+      border: 2px solid var(--primary);
+      background: white;
+      color: var(--primary);
+      border-radius: 30px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+    .tab-btn.bee-tab.active {
+      background: var(--bee-color);
+      border-color: var(--bee-color);
+    }
 
     .grid-container {
       display: grid;
@@ -33,28 +62,26 @@
       border-radius: 16px;
       padding: 24px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+      transition: all 0.3s ease;
     }
 
-    /* Incubator Animation Area */
-    .incubator-box {
-      text-align: center;
-      position: relative;
-    }
-    .egg-graphic {
+    /* Animation Area */
+    .anim-box { text-align: center; position: relative; }
+    .graphic-icon {
       font-size: 80px;
       margin: 20px 0;
       display: inline-block;
       animation: pulse 2s infinite ease-in-out;
-      transition: transform 0.1s ease;
+      transition: transform 0.2s ease;
     }
     @keyframes pulse {
-      0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(76, 175, 80, 0.4)); }
-      50% { transform: scale(1.08); filter: drop-shadow(0 0 15px rgba(76, 175, 80, 0.8)); }
-      100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(76, 175, 80, 0.4)); }
+      0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0.2)); }
+      50% { transform: scale(1.08); filter: drop-shadow(0 0 15px rgba(243, 156, 18, 0.6)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(0, 0, 0, 0.2)); }
     }
 
     /* Calculator */
-    .slider-container { margin: 25px 0; }
+    .slider-container { margin: 20px 0; }
     .slider {
       width: 100%;
       height: 8px;
@@ -63,6 +90,8 @@
       outline: none;
       accent-color: var(--primary);
     }
+    .slider.bee-slider { accent-color: var(--bee-color); }
+
     .result-box {
       background: #e8f5e9;
       border-left: 5px solid var(--primary);
@@ -70,7 +99,12 @@
       border-radius: 8px;
       margin-top: 15px;
     }
+    .result-box.bee-style {
+      background: var(--bee-bg);
+      border-left-color: var(--bee-color);
+    }
     .result-val { font-size: 1.3rem; font-weight: bold; color: var(--primary); }
+    .result-val.bee-text { color: var(--bee-color); }
 
     /* Stream Simulator */
     .stream-view {
@@ -106,53 +140,60 @@
       transition: background 0.2s;
       margin-top: 15px;
     }
-    .btn-action:hover { background: var(--primary-light); }
+    .btn-action.bee-btn { background: var(--bee-color); }
+    .btn-action:hover { opacity: 0.9; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>AgroInkub 🥚</h1>
+    <h1>AgroInkub 🌿</h1>
     <p>Ներդրում արա իրական գյուղատնտեսության մեջ՝ քո սմարթֆոնից</p>
   </header>
 
+  <!-- Categorization Switcher -->
+  <div class="tab-container">
+    <button class="tab-btn active" id="eggTabBtn" onclick="switchCategory('egg')">🥚 Թռչնաբուծություն (21 օր)</button>
+    <button class="tab-btn bee-tab" id="beeTabBtn" onclick="switchCategory('bee')">🐝 Խելացի Փեթակ (Սեզոնային)</button>
+  </div>
+
   <div class="grid-container">
 
-    <!-- 1. Ինտերակտիվ Ինկուբատոր -->
-    <div class="card incubator-box">
-      <h3>Վիրտուալ Ինկուբատոր</h3>
-      <div class="egg-graphic" id="incubatorEgg">🥚</div>
-      <p>Ջերմաստիճան: <b>37.8°C</b> | Խոնավություն: <b>65%</b></p>
-      <p style="margin-top: 10px; color: #888;">Օր 1 / 21 (Ինկուբացիայի ընթացք)</p>
+    <!-- 1. Ինտերակտիվ Վիջեթ -->
+    <div class="card anim-box">
+      <h3 id="widgetTitle">Վիրտուալ Ինկուբատոր</h3>
+      <div class="graphic-icon" id="animIcon">🥚</div>
+      <p id="sensorData">Ջերմաստիճան: <b>37.8°C</b> | Խոնավություն: <b>65%</b></p>
+      <p id="cycleStatus" style="margin-top: 10px; color: #888;">Օր 1 / 21 (Ինկուբացիայի ընթացք)</p>
     </div>
 
     <!-- 2. Ռիսկավորված Կալկուլյատոր -->
     <div class="card">
-      <h3>Եկամտաբերության Հաշվիչ</h3>
+      <h3 id="calcTitle">Եկամտաբերության Հաշվիչ</h3>
       <div class="slider-container">
-        <label>Ձվերի քանակ: <b id="eggCountVal">100</b> ձու (100 ֏/ձու)</label>
-        <input type="range" min="10" max="1000" step="10" value="100" class="slider" id="eggSlider">
+        <label id="unitLabel">Ձվերի քանակ: <b id="unitCountVal">100</b> ձու (100 ֏/ձու)</label>
+        <input type="range" min="10" max="1000" step="10" value="100" class="slider" id="unitSlider">
       </div>
       
       <p>Ներդրվող գումար: <b id="investVal">10,000</b> ֏</p>
       
-      <div class="result-box">
-        <p>Կանխատեսվող Եկամուտ (80% - 92% դուրսբերում):</p>
+      <div class="result-box" id="resultBox">
+        <p id="incomeDesc">Կանխատեսվող Եկամուտ (80% - 92% դուրսբերում):</p>
         <div class="result-val" id="incomeRange">11,000 ֏ - 12,400 ֏</div>
         <small id="profitVal" style="color: #555;">Մաքուր շահույթ՝ +1,000 ֏-ից մինչև +2,400 ֏</small>
       </div>
 
-      <button class="btn-action">Սկսել Ինկուբացիան</button>
+      <button class="btn-action" id="actionBtn">Սկսել Ինկուբացիան</button>
     </div>
 
-    <!-- 3. Live Web-կամերա (Simulated Stream) -->
+    <!-- 3. Live Web-կամերա -->
     <div class="card">
       <h3>Real-Time Live Web-Cam</h3>
       <div class="stream-view">
         <div class="live-badge">🔴 LIVE</div>
-        <p>📹 [Ինկուբատոր #042 Ուղիղ Հեռարձակում]</p>
+        <p id="camLabel">📹 [Ինկուբատոր #042 Ուղիղ Հեռարձակում]</p>
       </div>
-      <p style="margin-top: 12px; font-size: 0.9rem; color: #666;">
+      <p id="camDesc" style="margin-top: 12px; font-size: 0.9rem; color: #666;">
         Հետևիր քո ձվերի վիճակին ռեալ ժամանակում HD տեսախցիկների միջոցով:
       </p>
     </div>
@@ -160,34 +201,112 @@
   </div>
 
   <script>
-    const slider = document.getElementById('eggSlider');
-    const eggCountVal = document.getElementById('eggCountVal');
+    let currentCategory = 'egg'; // Default
+
+    const eggTabBtn = document.getElementById('eggTabBtn');
+    const beeTabBtn = document.getElementById('beeTabBtn');
+    
+    const animIcon = document.getElementById('animIcon');
+    const widgetTitle = document.getElementById('widgetTitle');
+    const sensorData = document.getElementById('sensorData');
+    const cycleStatus = document.getElementById('cycleStatus');
+
+    const calcTitle = document.getElementById('calcTitle');
+    const unitLabel = document.getElementById('unitLabel');
+    const unitCountVal = document.getElementById('unitCountVal');
+    const unitSlider = document.getElementById('unitSlider');
     const investVal = document.getElementById('investVal');
+    const incomeDesc = document.getElementById('incomeDesc');
     const incomeRange = document.getElementById('incomeRange');
     const profitVal = document.getElementById('profitVal');
-    const incubatorEgg = document.getElementById('incubatorEgg');
+    const resultBox = document.getElementById('resultBox');
+    const actionBtn = document.getElementById('actionBtn');
 
-    const EGG_PRICE = 100; // 1 ձվի ինքնարժեքը = 100 դրամ
+    const camLabel = document.getElementById('camLabel');
+    const camDesc = document.getElementById('camDesc');
 
-    slider.addEventListener('input', (e) => {
-      const count = parseInt(e.target.value);
-      const investment = count * EGG_PRICE;
-      
-      // 80% դուրսբերման դեպքում 137.5 ֏ / 92% դուրսբերման դեպքում 134.8 ֏ իրացում 1 ճուտից
-      const minIncome = Math.round(count * 0.80 * 137.5);
-      const maxIncome = Math.round(count * 0.92 * 134.8);
+    function switchCategory(cat) {
+      currentCategory = cat;
 
-      const minProfit = minIncome - investment;
-      const maxProfit = maxIncome - investment;
+      if (cat === 'egg') {
+        eggTabBtn.classList.add('active');
+        beeTabBtn.classList.remove('active');
 
-      eggCountVal.innerText = count;
-      investVal.innerText = investment.toLocaleString();
-      incomeRange.innerText = `${minIncome.toLocaleString()} ֏ - ${maxIncome.toLocaleString()} ֏`;
-      profitVal.innerText = `Մաքուր շահույթ՝ +${minProfit.toLocaleString()} ֏-ից մինչև +${maxProfit.toLocaleString()} ֏`;
+        animIcon.innerText = '🥚';
+        widgetTitle.innerText = 'Վիրտուալ Ինկուբատոր';
+        sensorData.innerHTML = 'Ջերմաստիճան: <b>37.8°C</b> | Խոնավություն: <b>65%</b>';
+        cycleStatus.innerText = 'Օր 1 / 21 (Ինկուբացիայի ընթացք)';
 
-      // Թեթև անիմացիոն wobble էֆեկտ ձվի վրա շարժելիս
-      incubatorEgg.style.transform = `rotate(${Math.sin(count) * 15}deg)`;
-    });
+        calcTitle.innerText = 'Եկամտաբերության Հաշվիչ';
+        unitSlider.min = 10; unitSlider.max = 1000; unitSlider.step = 10; unitSlider.value = 100;
+        unitSlider.classList.remove('bee-slider');
+
+        resultBox.classList.remove('bee-style');
+        incomeRange.classList.remove('bee-text');
+        actionBtn.classList.remove('bee-btn');
+        actionBtn.innerText = 'Սկսել Ինկուբացիան';
+
+        camLabel.innerText = '📹 [Ինկուբատոր #042 Ուղիղ Հեռարձակում]';
+        camDesc.innerText = 'Հետևիր քո ձվերի վիճակին ռեալ ժամանակում HD տեսախցիկների միջոցով:';
+      } else {
+        beeTabBtn.classList.add('active');
+        eggTabBtn.classList.remove('active');
+
+        animIcon.innerText = '🐝';
+        widgetTitle.innerText = 'Խելացի Փեթակ #012';
+        sensorData.innerHTML = 'Փեթակի քաշը: <b>24.5 կգ</b> | Ներսի t°: <b>35.0°C</b>';
+        cycleStatus.innerText = 'Սեզոն: Մեղրահավաքի ընթացք (Ամառ)';
+
+        calcTitle.innerText = 'Փեթակի/Մեղրի Հաշվիչ';
+        unitSlider.min = 1; unitSlider.max = 20; unitSlider.step = 1; unitSlider.value = 1;
+        unitSlider.classList.add('bee-slider');
+
+        resultBox.classList.add('bee-style');
+        incomeRange.classList.add('bee-text');
+        actionBtn.classList.add('bee-btn');
+        actionBtn.innerText = 'Ամրագրել Փեթակը';
+
+        camLabel.innerText = '📹 [Թռիչքուղի / Մեղվանոց #012 Stream]';
+        camDesc.innerText = 'Հետևիր մեղուների ակտիվ աշխատանքին և մեղրի ավելացմանը ռեալ ժամանակում:';
+      }
+
+      updateCalculator();
+    }
+
+    function updateCalculator() {
+      const val = parseInt(unitSlider.value);
+
+      if (currentCategory === 'egg') {
+        const investment = val * 100; // 100 ֏/ձու
+        const minIncome = Math.round(val * 0.80 * 137.5);
+        const maxIncome = Math.round(val * 0.92 * 134.8);
+        const minProfit = minIncome - investment;
+        const maxProfit = maxIncome - investment;
+
+        unitLabel.innerHTML = `Ձվերի քանակ: <b>${val}</b> ձու (100 ֏/ձու)`;
+        investVal.innerText = investment.toLocaleString();
+        incomeDesc.innerText = 'Կանխատեսվող Եկամուտ (80% - 92% դուրսբերում):';
+        incomeRange.innerText = `${minIncome.toLocaleString()} ֏ - ${maxIncome.toLocaleString()} ֏`;
+        profitVal.innerText = `Մաքուր շահույթ՝ +${minProfit.toLocaleString()} ֏-ից մինչև +${maxProfit.toLocaleString()} ֏`;
+      } else {
+        const investment = val * 22000; // 1 փեթակը/մասնաբաժինը = 22,000 ֏
+        const estHoney = val * 15; // ~15 կգ մեղր 1 փեթակից
+        const estRevenue = val * 37500; // Ներդրողի 50% մասնաբաժինը մեղրի վաճառքից
+        const minProfit = estRevenue - investment;
+
+        unitLabel.innerHTML = `Փեթակների քանակ: <b>${val}</b> փեթակ/մասնաբաժին`;
+        investVal.innerText = investment.toLocaleString();
+        incomeDesc.innerText = `Սպասվող մեղր՝ ~${estHoney} կգ | Եկամուտ վաճառքից/մեղրով:`;
+        incomeRange.innerText = `${estRevenue.toLocaleString()} ֏ (կամ ${estHoney} կգ մեղր)`;
+        profitVal.innerText = `Մաքուր շահույթ սեզոնին՝ +${minProfit.toLocaleString()} ֏ (+70% ROI)`;
+      }
+
+      // Anim wobble
+      animIcon.style.transform = `rotate(${Math.sin(val) * 12}deg)`;
+    }
+
+    unitSlider.addEventListener('input', updateCalculator);
+    updateCalculator();
   </script>
 </body>
 </html>
